@@ -1,0 +1,550 @@
+// ============================================================================
+// Nicotine whole-body PBPK - Inhalation
+
+[PARAM]
+    
+SEX = 0;         
+
+// --- Male physiology (73 kg reference, Valentin 2002 / ICRP) ---------------
+BW_M = 73;
+TV_Vad_M = 18.2;
+TV_Vbo_M = 10.5;
+TV_Vbr_M = 1.45;
+TV_VguWall_M = 0.65;
+TV_VguLumen_M = 0.35;
+TV_Vhe_M = 0.33;
+TV_Vki_M = 0.31;
+TV_Vli_M = 1.8;
+TV_Vlu_M = 0.5;   // [12.1-4] LUNG = LRT (pulmonary alveolar) tissue. Kolli
+// [K-T2] give human LRT = 0.54% BW = 0.394 L at 73 kg. The
+// 0.5 L here is retained (it is the value the v10 Vss
+// calibration was performed at); the 21% difference is a
+// DECLARED divergence, worth 0.5*(9.75*0.810) = 3.9 L on a
+// Vss of ~209 L if adopted, i.e. ~0.4%. [DIV-7]
+TV_Vmu_M = 29;
+TV_Vsk_M = 3.3;
+TV_Vsp_M = 0.15;
+TV_Vpa_M = 0.14;
+TV_Vbl_M = 5.6;
+TV_CO_M = 390;    // L/h
+
+// --- Female physiology (60 kg reference) -----------------------------------
+BW_F = 60;
+TV_Vad_F = 22.5;
+TV_Vbo_F = 7.8;
+TV_Vbr_F = 1.3;
+TV_VguWall_F = 0.6;
+TV_VguLumen_F = 0.3;
+TV_Vhe_F = 0.25;
+TV_Vki_F = 0.275;
+TV_Vli_F = 1.4;
+TV_Vlu_F = 0.42;
+TV_Vmu_F = 17.5;
+TV_Vsk_F = 2.3;
+TV_Vsp_F = 0.13;
+TV_Vpa_F = 0.12;
+TV_Vbl_F = 3.9;
+TV_CO_F = 354;
+
+BW_med_M = 74.8;
+BW_med_F = 61.5;
+
+
+// --- Nicotine physicochemistry ---------------------------------------------
+MW   = 162.23;    
+logD = 0.43;      
+PKA  = 7.8;       
+fup  = 0.95;     
+BP   = 1.2;      
+
+
+// --- Rodgers & Rowland tissue:plasma partition coefficients ----------------
+
+base_Kpad = 1.23;
+base_Kpbo = 2.30;
+base_Kpbr = 2.40;   
+base_Kpgu = 6.58;
+base_Kphe = 6.13;
+base_Kpki = 12.15;
+base_Kpli = 11.22;
+base_Kplu = 9.75;   // LRT (alveolar) tissue
+base_Kpurt = 9.75;  // URT tissue
+base_Kpmu = 4.71;
+base_Kpsk = 4.03;
+base_Kpsp = 8.25;
+base_Kppa = 5.21;
+base_Kpre = 6.61;
+
+Kp_scalar = 0.810;
+
+// --- Gut absorption -----------------------------------
+L = 270;
+d = 2.5;
+PF = 1.57;
+VF = 6.5;
+MF = 13;
+ITT = 3.32;
+A = 7440;
+B = 1e7;
+alpha = 0.6;
+beta = 4.395;     
+fabs = 1;
+fdis = 1;
+fperm = 1.0;
+
+FABSG = 1.0;      // fraction of swallowed dose reaching portal blood
+KGE = 4.0;        // gastric emptying, /h (fasted, t1/2 ~10 min)
+
+
+// RESPIRATORY MODULE
+
+PAPP_MIN = 2.56e-4; 
+
+T_UA  = 0.001;      // cm, URT barrier thickness (10 um)   
+T_PA  = 0.00005;    // cm, alveolar barrier thickness    
+
+SA_URT = 8358;      
+SA_LRT = 540000;    
+
+SA_URT_EXP = 0.0;  
+
+VELF_PCT  = 0.03;   
+VSURF_PCT = 0.02;   
+
+URT_PCT = 0.8;     
+
+FQ_URT = 0.025;     
+
+KMUCC = 6.0;        
+
+KP_LIN = 1.0;     
+
+// --- Regional deposition ---------------------------------------------------
+FDEP_URT = 0.602;
+FDEP_LRT = 0.327;
+FDEP_EXH = 0.071;   
+
+REL_TO_DEP = 1.0;   
+FMOUTH_OF_URT = 0.0;   
+
+// --- Oral / buccal limb (the extension) ------------------------------------
+KORO   = 1.5608;  
+KORO_MODE = 0;    
+
+PAPP_ORO = 3.96e-4; 
+
+SA_BUCC = 4.0;    
+V_SAL   = 2.6;    
+
+FSW_ORAL = 0.3357;
+FSW_MODE = 1;
+
+
+ORAL_TOT_TARGET = 2.3497;
+
+
+// --- pH-dependent free-base fraction (INACTIVE by default) -----------------
+PH_ON    = 0;
+PH_POUCH = 8.3;   // pH at the absorbing surface for the CURRENT arm
+PH_REF   = 8.3;   // pH at which KORO was fitted
+
+BUCCAL_IN_JUG = 1.0;
+
+
+MOUTH_TO_JUG = 0.0;
+
+
+PH_ION_RATIO = 0.094;
+
+// --- Elimination --------------------------------------
+KCat_2A6 = 11;      // /min  - Yamazaki 1999, recombinant CYP2A6
+Km_2A6 = 11;        // umol/L
+Abundance_2A6 = 29; // pmol/mg MP
+ISEF_2A6 = 1.13;    // CALIBRATION CONSTANT, not true IVIVE
+Scale_2A6 = 1;
+CLint_non2A6 = 16.8;
+MPPGL = 32;
+fumic = 1.0;
+CLren = 3.4;        // L/h
+
+
+IIV_ON = 0;         
+
+
+[OMEGA] @annotated
+eBW : 0.0279 : body weight
+eCO : 0.0253 : cardiac output
+eCYP : 0.5341 : hepatic CYP2A6 abundance
+eDEP : 0.1675 : total deposited dose
+eKO : 0.1339 : oromucosal absorption rate
+eMCC : 0.1084 : mucociliary clearance rate
+
+[CMT]
+GUTLUMEN GUTWALL GUT ADIPOSE BRAIN HEART BONE
+KIDNEY LIVER LUNG MUSCLE SPLEEN PANCREAS SKIN REST
+ART VEN MOUTH STOMACH SWALLOWED
+ELF SURF URT MCCLOSS
+
+
+
+[MAIN]
+double BW_med = SEX * BW_med_F + (1 - SEX) * BW_med_M;
+double BW_IIV = BW_med * exp(ETA(1));
+double ref_BW = SEX * BW_F + (1 - SEX) * BW_M;
+
+double current_TV_Vad = SEX*TV_Vad_F + (1-SEX)*TV_Vad_M;
+double current_TV_Vbo = SEX*TV_Vbo_F + (1-SEX)*TV_Vbo_M;
+double current_TV_Vbr = SEX*TV_Vbr_F + (1-SEX)*TV_Vbr_M;
+double current_TV_VguWall  = SEX*TV_VguWall_F  + (1-SEX)*TV_VguWall_M;
+double current_TV_VguLumen = SEX*TV_VguLumen_F + (1-SEX)*TV_VguLumen_M;
+double current_TV_Vhe = SEX*TV_Vhe_F + (1-SEX)*TV_Vhe_M;
+double current_TV_Vki = SEX*TV_Vki_F + (1-SEX)*TV_Vki_M;
+double current_TV_Vli = SEX*TV_Vli_F + (1-SEX)*TV_Vli_M;
+double current_TV_Vlu = SEX*TV_Vlu_F + (1-SEX)*TV_Vlu_M;
+double current_TV_Vmu = SEX*TV_Vmu_F + (1-SEX)*TV_Vmu_M;
+double current_TV_Vsk = SEX*TV_Vsk_F + (1-SEX)*TV_Vsk_M;
+double current_TV_Vsp = SEX*TV_Vsp_F + (1-SEX)*TV_Vsp_M;
+double current_TV_Vpa = SEX*TV_Vpa_F + (1-SEX)*TV_Vpa_M;
+double current_TV_Vbl = SEX*TV_Vbl_F + (1-SEX)*TV_Vbl_M;
+double current_TV_CO  = SEX*TV_CO_F  + (1-SEX)*TV_CO_M;
+
+double sum_vol_M = TV_Vli_M+TV_Vki_M+TV_Vsp_M+TV_Vpa_M+TV_Vhe_M+TV_Vlu_M+TV_Vbo_M+TV_Vbr_M+TV_Vmu_M+TV_Vsk_M+TV_Vad_M+TV_VguWall_M+TV_Vbl_M;
+double sum_vol_F = TV_Vli_F+TV_Vki_F+TV_Vsp_F+TV_Vpa_F+TV_Vhe_F+TV_Vlu_F+TV_Vbo_F+TV_Vbr_F+TV_Vmu_F+TV_Vsk_F+TV_Vad_F+TV_VguWall_F+TV_Vbl_F;
+double current_TV_Vre = SEX*(BW_F - sum_vol_F) + (1-SEX)*(BW_M - sum_vol_M);
+
+double sf = BW_IIV / ref_BW;
+double Vad = current_TV_Vad * sf;
+double Vbo = current_TV_Vbo * sf;
+double Vbr = current_TV_Vbr * sf;
+double VguWall = current_TV_VguWall * sf;
+double VguLumen = current_TV_VguLumen;
+double Vhe = current_TV_Vhe * sf;
+double Vki = current_TV_Vki * sf;
+double Vli = current_TV_Vli * sf;
+double Vlu = current_TV_Vlu * sf;      // [12.1-4] LRT tissue, NOT split
+double Vmu = current_TV_Vmu * sf;
+double Vsk = current_TV_Vsk * sf;
+double Vsp = current_TV_Vsp * sf;
+double Vpa = current_TV_Vpa * sf;
+double Vbl = current_TV_Vbl * sf;
+
+
+double Vurt = URT_PCT / 100.0 * BW_IIV;
+double Vre  = current_TV_Vre * sf - Vurt;
+
+
+// --- lining fluid volumes ---------------------------------------------------
+double V_ELF  = VELF_PCT  / 100.0 * BW_IIV;   // L, density 1 assumed
+double V_SURF = VSURF_PCT / 100.0 * BW_IIV;
+
+double CO = current_TV_CO * pow(sf, 0.75) * exp(ETA(2));
+
+double frac_Qad = SEX*0.085 + (1-SEX)*0.05;
+double frac_Qbo = 0.05;
+double frac_Qbr = 0.12;
+double frac_Qgu = SEX*0.17  + (1-SEX)*0.15;
+double frac_Qhe = SEX*0.05  + (1-SEX)*0.04;
+double frac_Qki = SEX*0.17  + (1-SEX)*0.19;
+double frac_Qmu = SEX*0.12  + (1-SEX)*0.17;
+double frac_Qsk = 0.05;
+double frac_Qsp = 0.03;
+double frac_Qpa = 0.01;
+double frac_Qha = 0.075;
+double frac_Qurt = FQ_URT;                                  // [K-T2] 2.5%
+double frac_Qre  = (SEX*0.07 + (1-SEX)*0.065) - frac_Qurt;  // carved from REST
+
+double Qad = frac_Qad*CO;
+double Qbo = frac_Qbo*CO;
+double Qbr = frac_Qbr*CO;
+double Qgu = frac_Qgu*CO;
+double Qhe = frac_Qhe*CO;
+double Qki = frac_Qki*CO;
+double Qmu = frac_Qmu*CO;
+double Qsk = frac_Qsk*CO;
+double Qsp = frac_Qsp*CO;
+double Qpa = frac_Qpa*CO;
+double Qha = frac_Qha*CO;
+double Qurt = frac_Qurt*CO;
+double Qre = frac_Qre*CO;
+double Qlu = CO;
+double Qli = Qgu + Qsp + Qha;
+
+
+double frac_sum = frac_Qad + frac_Qbo + frac_Qbr + frac_Qgu + frac_Qhe +
+  frac_Qki + frac_Qmu + frac_Qsk + frac_Qsp + frac_Qpa +
+  frac_Qha + frac_Qurt + frac_Qre;
+
+double Vve = 0.705 * Vbl;
+double Var = 0.295 * Vbl;
+
+// --- gut absorption --------------------------------------------
+double SA_abs   = M_PI*L*d*PF*VF*MF*1e-4;
+double SA_basal = M_PI*L*d*PF*VF*1e-4;
+double MA = pow(10, logD);
+double Peff = fperm*A*((pow(MW,(-alpha-beta))*MA)/(pow(MW,(-alpha)) + B*pow(MW,(-beta))*MA) * 1e-2 * 3600);
+double kd = fdis*Peff*SA_abs*1000/VguLumen;
+double ka = fabs*Peff*SA_basal*1000/VguWall;
+double kt = 1/ITT;
+double fa_gut = kd / (kd + kt);
+
+double KMUCC_i = (IIV_ON > 0.5) ? KMUCC * exp(ETA(6)) : KMUCC;
+
+double SA_URT_i = SA_URT * pow(BW_IIV / 73.0, SA_URT_EXP);   // [V122-4]
+double PS_URT_nom = PAPP_MIN * SA_URT_i * 0.06;              // L/h
+double PS_LRT     = PAPP_MIN * (T_UA/T_PA) * SA_LRT * 0.06;  // L/h
+
+double PS_URT     = PS_URT_nom;
+double SA_URT_eff = PS_URT / (PAPP_MIN * 0.06);   // cm2 actually in force
+
+
+double k_ELF  = PS_URT / V_ELF;
+double k_SURF = PS_LRT / V_SURF;
+
+double f_abs_URT_mech = (PS_URT_nom / V_ELF) / ((PS_URT_nom / V_ELF) + KMUCC_i);
+double f_abs_URT      = k_ELF / (k_ELF + KMUCC_i); // what the ODEs deliver
+
+double Kpad = base_Kpad*Kp_scalar;
+double Kpbo = base_Kpbo*Kp_scalar;
+double Kpbr = base_Kpbr*Kp_scalar;
+double Kpgu = base_Kpgu*Kp_scalar;
+double Kphe = base_Kphe*Kp_scalar;
+double Kpki = base_Kpki*Kp_scalar;
+double Kpli = base_Kpli*Kp_scalar;
+double Kplu = base_Kplu*Kp_scalar;
+double Kpurt = base_Kpurt*Kp_scalar;
+double Kpmu = base_Kpmu*Kp_scalar;
+double Kpsp = base_Kpsp*Kp_scalar;
+double Kpsk = base_Kpsk*Kp_scalar;
+double Kppa = base_Kppa*Kp_scalar;
+double Kpre = base_Kpre*Kp_scalar;
+
+double k_urt_washout = Qurt / (Vurt * (Kpurt / BP));
+
+// --- deposition IIV ---------------------------------------------------------
+double dep_iiv = (IIV_ON > 0.5) ? exp(ETA(4)) : 1.0;
+F_MOUTH = dep_iiv;
+F_ELF   = dep_iiv;
+F_SURF  = dep_iiv;
+
+double DEP_SUM = FDEP_URT + FDEP_LRT + FDEP_EXH;   // must be 1
+double FDEP_MOUTH_EFF = FDEP_URT * FMOUTH_OF_URT;
+double FDEP_ELF_EFF   = FDEP_URT * (1.0 - FMOUTH_OF_URT);
+
+// --- buccal limb ------------------------------------------------------------
+double KORO_derived = (PAPP_ORO * 3600.0) * SA_BUCC / V_SAL;
+double KORO_use     = (KORO_MODE > 0.5) ? KORO_derived : KORO;
+
+double KORO_ind = (IIV_ON > 0.5) ? KORO_use*exp(ETA(5)) : KORO_use;
+
+double f_freebase     = 1.0 / (1.0 + pow(10.0, PKA - PH_POUCH));
+double f_freebase_ref = 1.0 / (1.0 + pow(10.0, PKA - PH_REF));
+double perm_rel       = PH_ION_RATIO + (1.0 - PH_ION_RATIO) * f_freebase;
+double perm_rel_ref   = PH_ION_RATIO + (1.0 - PH_ION_RATIO) * f_freebase_ref;
+double KORO_i = (PH_ON > 0.5 ? KORO_ind * perm_rel/perm_rel_ref : KORO_ind);
+double FSW_eff = (FSW_MODE > 0.5 && ORAL_TOT_TARGET > KORO_use)
+  ? (1.0 - KORO_use / ORAL_TOT_TARGET) : FSW_ORAL;
+double KSW_i  = KORO_i * FSW_eff / (1.0 - FSW_eff);
+double oral_tot_pred = KORO_i + KSW_i;   // compare Bergstrom 2.3497 /h
+// Mirrors of two [PARAM] values, so the audit trail records what was in force.
+// Written as [MAIN] doubles rather than captured as parameters directly:
+// capturing a parameter name is legal in most mrgsolve builds but not in all,
+// and a build failure here would be an expensive way to learn that.
+double mouth_to_jug_eff = MOUTH_TO_JUG;
+double buccal_in_jug_eff = BUCCAL_IN_JUG;
+
+// --- metabolism -------------------------------------------------
+double Quantity_2A6 = Abundance_2A6 * MPPGL * Vli * 1000.0 / 1e6 * exp(ETA(3));
+double Vmax_2A6 = KCat_2A6 * 60.0 * Quantity_2A6 * ISEF_2A6 * Scale_2A6;
+double Km_2A6_u  = Km_2A6 * fumic;
+double CLint_other = CLint_non2A6 * Vli;
+
+double CLint_2A6 = Vmax_2A6 / Km_2A6_u;
+double CLint_hep = CLint_2A6 + CLint_other;
+double fm_2A6    = CLint_2A6 / CLint_hep;
+double fub_i     = fup / BP;
+double EH_pred   = fub_i * CLint_hep / (Qli + fub_i * CLint_hep);
+
+double F_oral    = FABSG * fa_gut * (1.0 - EH_pred);
+double CL_plasma = EH_pred * Qli * BP + CLren;
+
+double f_mcc_to_stomach = (KMUCC_i*V_ELF) / (PS_URT + KMUCC_i*V_ELF);
+double CL_mcc_pred = PS_URT * (Kpurt/BP) * f_mcc_to_stomach * (1.0 - F_oral) * BP;
+
+// APPARENT BIOAVAILABILITY OF DEPOSITED NICOTINE, by limb.
+double F_mouthlimb = (1.0 - FSW_eff) + FSW_eff * F_oral;   // [V123-1]
+double F_elflimb   = f_abs_URT + (1.0 - f_abs_URT) * F_oral;
+double dep_dosed   = FDEP_MOUTH_EFF + FDEP_ELF_EFF + FDEP_LRT;
+double F_dep       = (FDEP_MOUTH_EFF*F_mouthlimb + FDEP_ELF_EFF*F_elflimb
+                        + FDEP_LRT*1.0) / dep_dosed;
+double rel_to_dep_eff = REL_TO_DEP;
+double F_dep_released = F_dep * rel_to_dep_eff;
+
+double m_direct = FDEP_MOUTH_EFF*(1.0 - FSW_eff) + FDEP_ELF_EFF*f_abs_URT;
+double m_lrt    = FDEP_LRT;
+double m_gi     = (FDEP_MOUTH_EFF*FSW_eff
+                     + FDEP_ELF_EFF*(1.0 - f_abs_URT)) * F_oral;
+double m_tot    = m_direct + m_lrt + m_gi;
+double AUCfrac_URT = m_direct / m_tot;
+double AUCfrac_LRT = m_lrt    / m_tot;
+double AUCfrac_GI  = m_gi     / m_tot;
+
+double Vss_model = Vad*Kpad + Vbo*Kpbo + Vbr*Kpbr + VguWall*Kpgu + Vhe*Kphe +
+  Vki*Kpki + Vli*Kpli + Vlu*Kplu + Vurt*Kpurt + Vmu*Kpmu +
+  Vsp*Kpsp + Vsk*Kpsk + Vpa*Kppa + Vre*Kpre + Vbl*BP;
+double Vss_per_kg = Vss_model / BW_IIV;
+
+[ODE]
+double Cadipose = ADIPOSE/Vad;
+double Cbone = BONE/Vbo;
+double Cbrain   = BRAIN/Vbr;
+double Cheart = HEART/Vhe;
+double Ckidney  = KIDNEY/Vki;
+double Cliver = LIVER/Vli;
+double Clrt     = LUNG/Vlu;           // ALVEOLAR TISSUE   
+double Curt     = URT/Vurt;           // URT TISSUE        
+double Cmuscle = MUSCLE/Vmu;
+double Cspleen  = SPLEEN/Vsp;
+double Crest = REST/Vre;
+double Carterial = ART/Var;
+double Cvenous = VEN/Vve;
+double Cgut = GUT/VguWall;
+double CgutLumen = GUTLUMEN/VguLumen;
+double Cskin = SKIN/Vsk;
+double Cpancreas = PANCREAS/Vpa;
+
+double C_elf  = ELF/V_ELF;            // URT lining fluid  (Kolli: ANelf)
+double C_surf = SURF/V_SURF;          // surfactant        (Kolli: ANsurf)
+
+double Cliverfree = ((Cliver/Kpli)*fup/MW) * 1000;   // umol/L, unbound
+
+double v2A6   = Vmax_2A6 * Cliverfree / (Km_2A6_u + Cliverfree);   // umol/h
+double vOther = CLint_other * Cliverfree;                          // umol/h
+double CLhep_rate_mg = (v2A6 + vOther) * MW / 1000.0;              // mg/h
+
+double CLren_rate = CLren * (Carterial/BP);
+double lumen_to_wall_rate = kd*VguLumen*CgutLumen;
+
+double J_URT = PS_URT * (C_elf  - Curt/KP_LIN);   // mg/h, ELF  -> URT tissue
+double J_LRT = PS_LRT * (C_surf - Clrt/KP_LIN);   // mg/h, SURF -> LRT tissue
+
+dxdt_ELF  = -J_URT - KMUCC_i*ELF;
+dxdt_SURF = -J_LRT;
+
+double buccal_flux    = KORO_i*MOUTH;
+double buccal_to_urt  = MOUTH_TO_JUG * buccal_flux;
+double buccal_to_ven  = (1.0 - MOUTH_TO_JUG) * buccal_flux;
+dxdt_URT = J_URT + Qurt*(Carterial - Curt/(Kpurt/BP)) + buccal_to_urt;
+
+dxdt_MOUTH = -(KORO_i + KSW_i)*MOUTH;
+
+dxdt_SWALLOWED = KSW_i*MOUTH;
+
+dxdt_MCCLOSS = KMUCC_i*ELF;
+
+dxdt_STOMACH  = KSW_i*MOUTH + KMUCC_i*ELF - KGE*STOMACH;
+dxdt_GUTLUMEN = -lumen_to_wall_rate - kt*GUTLUMEN + KGE*STOMACH;
+dxdt_GUTWALL  = FABSG*lumen_to_wall_rate - ka*GUTWALL;
+dxdt_GUT      = ka*GUTWALL + Qgu*(Carterial - Cgut/(Kpgu/BP));
+
+dxdt_ADIPOSE  = Qad*(Carterial - Cadipose/(Kpad/BP));
+dxdt_BRAIN    = Qbr*(Carterial - Cbrain/(Kpbr/BP));
+dxdt_HEART    = Qhe*(Carterial - Cheart/(Kphe/BP));
+dxdt_BONE     = Qbo*(Carterial - Cbone/(Kpbo/BP));
+dxdt_KIDNEY   = Qki*(Carterial - Ckidney/(Kpki/BP)) - CLren_rate;
+dxdt_LIVER    = Qgu*(Cgut/(Kpgu/BP)) + Qsp*(Cspleen/(Kpsp/BP)) +
+  Qha*Carterial - Qli*(Cliver/(Kpli/BP)) - CLhep_rate_mg;
+
+dxdt_LUNG     = J_LRT + Qlu*(Cvenous - Clrt/(Kplu/BP));
+
+dxdt_MUSCLE   = Qmu*(Carterial - Cmuscle/(Kpmu/BP));
+dxdt_SPLEEN   = Qsp*(Carterial - Cspleen/(Kpsp/BP));
+dxdt_SKIN     = Qsk*(Carterial - Cskin/(Kpsk/BP));
+dxdt_PANCREAS = Qpa*(Carterial - Cpancreas/(Kppa/BP));
+dxdt_REST     = Qre*(Carterial - Crest/(Kpre/BP));
+
+dxdt_VEN = Qad*(Cadipose/(Kpad/BP)) + Qbr*(Cbrain/(Kpbr/BP)) +
+  Qhe*(Cheart/(Kphe/BP)) + Qki*(Ckidney/(Kpki/BP)) +
+  Qli*(Cliver/(Kpli/BP)) + Qmu*(Cmuscle/(Kpmu/BP)) +
+  Qbo*(Cbone/(Kpbo/BP)) + Qsk*(Cskin/(Kpsk/BP)) +
+  Qpa*(Cpancreas/(Kppa/BP)) + Qre*(Crest/(Kpre/BP)) +
+  Qurt*(Curt/(Kpurt/BP)) - Qlu*Cvenous
++ buccal_to_ven;  // [V123-2] oromucosal absorption, bypasses first pass.
+
+dxdt_ART = Qlu*(Clrt/(Kplu/BP) - Carterial);
+
+[TABLE]
+capture C_plasma = (VEN/Vve/BP)*1000;
+
+capture C_art = (ART/Var/BP)*1000;
+
+double Qhead = Qbr + Qurt;
+double buccal_to_jug_blood = BUCCAL_IN_JUG * KORO_i * MOUTH * (1.0 - MOUTH_TO_JUG);
+double Cjug_blood = (Qbr*(BRAIN/Vbr)/(Kpbr/BP) + Qurt*(URT/Vurt)/(Kpurt/BP)
+                       + buccal_to_jug_blood)
+  / Qhead;
+capture C_jug = (Cjug_blood/BP)*1000;
+  
+
+double Qper = Qmu + Qsk + Qad;
+double Cper_blood = (Qmu*(MUSCLE/Vmu)/(Kpmu/BP) + Qsk*(SKIN/Vsk)/(Kpsk/BP)
+                         + Qad*(ADIPOSE/Vad)/(Kpad/BP)) / Qper;
+capture C_periph = (Cper_blood/BP)*1000;
+
+capture C_ELF  = ELF/V_ELF;      // mg/L
+capture C_SURF = SURF/V_SURF;
+capture C_URT  = URT/Vurt;
+  
+capture SAT_2A6 = (((LIVER/Vli)/Kpli)*fup/MW*1000.0) / Km_2A6_u;
+  
+  [CAPTURE] @annotated
+  BW_IIV : kg
+  Vss_model : L
+  Vss_per_kg : L/kg
+  CL_plasma : L/h, predicted total plasma clearance
+  CL_mcc_pred : L/h, systemic clearance via URT->ELF->MCC->first pass [V122-7]
+  Vurt : L, URT tissue volume
+  Vlu : L, LRT (alveolar) tissue volume
+  Vre : L, REST volume after the URT carve-out
+  V_ELF : L, URT lining fluid volume
+  V_SURF : L, alveolar lining fluid volume
+  SA_URT_i : cm2, URT surface area after allometric scaling [V122-4]
+  SA_URT_eff : cm2, URT surface area implied by PS_URT actually in force
+  PS_URT : L/h, URT permeability-surface-area product actually in force
+  PS_URT_nom : L/h, URT PS product from parameters, before any override
+  PS_LRT : L/h, alveolar permeability-surface-area product
+  k_ELF : /h, absorption rate constant out of the URT lining fluid
+  KMUCC_i : /h, this subject's mucociliary clearance rate; equals KMUCC at ETA(6)=0 [V128-1]
+  k_SURF : /h, absorption rate constant out of the surfactant
+  k_urt_washout : /h, URT tissue to blood; expect 2.52 not 5.86 [V122-9]
+  f_abs_URT_mech : mechanistic URT absorbed fraction, expect 0.488 at reference
+  f_abs_URT : URT absorbed fraction the ODEs actually deliver [V122-2]
+  f_mcc_to_stomach : fraction of ELF content swept to stomach
+  AUCfrac_URT : predicted URT share of systemic AUC, compare Kolli 0.482
+  AUCfrac_LRT : predicted LRT share of systemic AUC, compare Kolli 0.387
+  AUCfrac_GI : predicted GI share of systemic AUC, compare Kolli 0.131
+  fa_gut : fraction of swallowed dose reaching the gut wall
+  F_oral : structural bioavailability of the swallowed fraction, compare Kolli-implied 0.568
+  F_mouthlimb : apparent bioavailability of oropharyngeal deposit
+  F_elflimb : apparent bioavailability of conducting-airway deposit
+  F_dep : apparent bioavailability of total deposited nicotine
+  F_dep_released : apparent bioavailability of RELEASED dose, compare Molander 0.51 [V123-3]
+  rel_to_dep_eff : released -> deposited conversion in force [V123-3]
+  FSW_eff : swallowed fraction actually in force [V123-1]
+  oral_tot_pred : /h, KORO_i + KSW_i, compare Bergstrom 2.3497 [V123-1]
+  mouth_to_jug_eff : fraction of buccal flux routed through URT tissue [V123-2]
+  buccal_in_jug_eff : whether buccal absorption is visible to C_jug [V124-1]
+  DEP_SUM : sum of the deposition fractions, must equal 1
+  frac_sum : sum of the blood-flow fractions, must equal 1
+  FDEP_MOUTH_EFF : effective oropharyngeal deposition fraction
+  FDEP_ELF_EFF : effective conducting-airway deposition fraction
+  KORO_derived : /h, Adrian 2006 mechanistic oromucosal rate [V122-6]
+  KORO_use : /h, oromucosal rate selected by KORO_MODE
+  KORO_ind : /h, individual oromucosal rate before any pH adjustment
+  KORO_i : /h, individual oromucosal rate after any pH adjustment
+  KSW_i : /h, individual oral swallowing rate
+  perm_rel : relative oromucosal permeability at the arm pH [V122-5]
+  dep_iiv : individual deposited-dose multiplier
+  CLint_2A6 : L/h
+  CLint_hep : L/h
+  fm_2A6 : fraction of hepatic CLint via CYP2A6
+  EH_pred : predicted hepatic extraction ratio
