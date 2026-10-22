@@ -127,7 +127,7 @@ FDEP_EXH = 0.071;
 REL_TO_DEP = 1.0;   
 FMOUTH_OF_URT = 0.0;   
 
-// --- Oral / buccal limb (the extension) ------------------------------------
+// --- Oral / buccal limb ------------------------------------
 KORO   = 1.5608;  
 KORO_MODE = 0;    
 
